@@ -38,11 +38,11 @@ async def fetch_temperature(city_name: str) -> float:
 @router.post(
     "/temperatures/update/", response_model=List[schemas.Temperature]
 )
-async def update_temperatures(db: Session = Depends(get_db)):
+async def update_temperatures(db: Session = Depends(get_db)) -> List[schemas.Temperature]:
     cities = crud.get_cities(db)
     temperatures = []
 
-    async def fetch_and_store(city):
+    async def fetch_and_store(city) -> schemas.Temperature:
         temperature = await fetch_temperature(city.name)
         db_temperature = schemas.TemperatureCreate(
             city_id=city.id, date_time=datetime.now(), temperature=temperature
@@ -60,7 +60,7 @@ def read_temperatures(
     limit: int = 10,
     city_id: int = None,
     db: Session = Depends(get_db),
-):
+) -> List[schemas.Temperature]:
     if city_id:
         temperatures = crud.get_temperature_by_city(
             db, city_id=city_id, skip=skip, limit=limit

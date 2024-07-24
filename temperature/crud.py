@@ -6,7 +6,9 @@ from temperature import models, schemas
 from city import models as city_models
 
 
-def get_temperatures(db: Session, skip: int = 0, limit: int = 10) -> List[models.Temperature]:
+def get_temperatures(
+        db: Session, skip: int = 0, limit: int = 10
+) -> List[models.Temperature]:
     return db.query(models.Temperature).offset(skip).limit(limit).all()
 
 
@@ -22,7 +24,9 @@ def get_temperature_by_city(
     )
 
 
-def create_temperature(db: Session, temperature: schemas.TemperatureCreate):
+def create_temperature(
+        db: Session, temperature: schemas.TemperatureCreate
+) -> models.Temperature:
     db_temperature = models.Temperature(**temperature.dict())
     db.add(db_temperature)
     db.commit()
@@ -30,5 +34,5 @@ def create_temperature(db: Session, temperature: schemas.TemperatureCreate):
     return db_temperature
 
 
-def get_cities(db: Session):
+def get_cities(db: Session) -> List[city_models.City]:
     return db.query(city_models.City).all()
